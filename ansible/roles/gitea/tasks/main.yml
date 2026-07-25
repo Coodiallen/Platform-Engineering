@@ -1,0 +1,17 @@
+---
+- name: Create directory for Gitea
+  file:
+    path: /opt/gitea
+    state: directory
+    mode: '0755'
+
+- name: Deploy docker-compose.yml from template
+  template:
+    src: docker-compose.yml.j2
+    dest: /opt/gitea/docker-compose.yml
+    mode: '0644'
+
+- name: Start Gitea using Docker Compose
+  community.docker.docker_compose_v2:
+    project_src: /opt/gitea
+    state: present

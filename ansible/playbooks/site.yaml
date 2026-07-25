@@ -12,3 +12,10 @@
   roles:
     - role: docker
       tags: [docker]
+
+- name: Deploy Gitea on management node
+  hosts: management
+  become: true
+  roles:
+    - role: gitea
+      tags: [gitea]
