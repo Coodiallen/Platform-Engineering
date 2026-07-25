@@ -3,3 +3,4 @@
 *.log
 *.pid
 *.lock
+ansible/inventory/vagrant_ssh_config
