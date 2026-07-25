@@ -2,21 +2,8 @@
 - name: Prepare all nodes
   hosts: all
   become: true
-  tasks:
-    - name: Update apt cache
-      apt:
-        update_cache: true
-        cache_valid_time: 3600
-
-    - name: Install base packages
-      apt:
-        name:
-          - curl
-          - wget
-          - git
-          - htop
-          - net-tools
-        state: present
+  roles:
+    - base
 
 - name: Install Docker on management and k8s nodes
   hosts: management, k8s_cluster

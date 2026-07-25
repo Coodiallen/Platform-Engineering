@@ -1,0 +1,18 @@
+---
+- name: Update apt cache and upgrade all packages
+  apt:
+    update_cache: true
+    upgrade: dist
+    cache_valid_time: 3600
+
+- name: Install base administrative utilities
+  apt:
+    name:
+      - curl
+      - wget
+      - git
+      - htop
+      - net-tools
+      - sudo
+      - ufw
+    state: present
