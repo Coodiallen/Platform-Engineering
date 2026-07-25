@@ -3,10 +3,12 @@
   hosts: all
   become: true
   roles:
-    - base
+    - role: base
+      tags: [base, update]
 
 - name: Install Docker on management and k8s nodes
   hosts: management, k8s_cluster
   become: true
   roles:
-    - docker
+    - role: docker
+      tags: [docker]
