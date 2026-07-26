@@ -51,9 +51,7 @@
 - name: Create containerd config
   ansible.builtin.shell: |
     mkdir -p /etc/containerd
-    containerd config default | sed 's/SystemdCgroup = false/SystemdCgroup = true/' > /etc/containerd/config.toml
-  args:
-    creates: /etc/containerd/config.toml
+    containerd config default | sed 's/disabled_plugins = \["cri"\]/disabled_plugins = []/' | sed 's/SystemdCgroup = false/SystemdCgroup = true/' > /etc/containerd/config.toml
   notify: Restart containerd
 
 - name: Ensure containerd is running

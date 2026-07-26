@@ -1,0 +1,12 @@
+---
+- name: Initialize Kubernetes Control Plane
+  hosts: control_plane
+  become: true
+  roles:
+    - k8s_control_plane
+
+- name: Join Kubernetes Worker Nodes
+  hosts: workers
+  become: true
+  roles:
+    - k8s_worker
