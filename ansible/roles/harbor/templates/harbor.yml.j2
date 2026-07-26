@@ -1,0 +1,78 @@
+# Configuration file of Harbor
+
+# The IP address or hostname to access Harbor portal or registry with.
+# DO NOT USE localhost or 127.0.0.1, because Harbor needs to be accessed by external clients.
+hostname: {{ harbor_hostname }}
+
+# http related config
+http:
+  # port for http, default is 80. If https enabled, this port will redirect to https port
+  port: {{ harbor_http_port }}
+
+# https related config
+# https:
+  # https port for harbor, default is 443
+  # port: 443
+  # The path of cert and key for https
+  # certificate: /your/certificate/path
+  # private_key: /your/private/key/path
+
+# The initial password of Harbor admin.
+# Change it from portal after launching Harbor.
+harbor_admin_password: {{ harbor_admin_password }}
+
+# Target database where harbor stores persistent data
+database:
+  # The password for the root user of Harbor database.
+  password: "root123_db_password"
+  # The maximum number of connections in the idle connection pool.
+  max_idle_conns: 50
+  # The maximum number of open connections to the database.
+  max_open_conns: 100
+
+# The path in host header for storing persistent data
+data_volume: /data/harbor
+
+# Harbor storage configuration
+storage_service:
+  # filesystem is the default storage backend
+  filesystem:
+    maxthreads: 100
+
+# Harbor trivy configuration
+trivy:
+  enabled: true
+
+# The configuration for jobservice
+jobservice:
+  # Maximum number of job workers in jobservice
+  max_job_workers: 10
+  job_loggers:
+    - name: "STD_OUTPUT"
+  logger_sweeper_duration: 1
+
+# The configuration for notification
+notification:
+  webhook_job_max_retry: 3
+  webhook_job_http_client_timeout: 3
+
+# Log configurations
+log:
+  # options are debug, info, warning, error, fatal
+  level: info
+  # local location for logs
+  local:
+    rotate_count: 50
+    rotate_size: 200M
+    location: /var/log/harbor
+
+# Metric configuration
+metric:
+  enabled: false
+  port: 9090
+  path: /metrics
+
+# Cache configuration
+cache:
+  # Default retention time for cache (in hours)
+  expire_hours: 24

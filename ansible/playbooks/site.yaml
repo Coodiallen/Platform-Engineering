@@ -13,9 +13,11 @@
     - role: docker
       tags: [docker]
 
-- name: Deploy Gitea on management node
+- name: Deploy management services (Gitea, Harbor)
   hosts: management
   become: true
   roles:
     - role: gitea
       tags: [gitea]
+    - role: harbor
+      tags: [harbor]

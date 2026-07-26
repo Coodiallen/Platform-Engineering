@@ -1,0 +1,38 @@
+---
+- name: Create Harbor installation directory
+  ansible.builtin.file:
+    path: "{{ harbor_install_dir }}"
+    state: directory
+    mode: '0755'
+
+- name: Check if Harbor installer is already downloaded
+  ansible.builtin.stat:
+    path: "{{ harbor_install_dir }}/harbor/install.sh"
+  register: harbor_installer
+
+- name: Download Harbor installer archive
+  ansible.builtin.get_url:
+    url: "https://github.com/goharbor/harbor/releases/download/{{ harbor_version }}/harbor-online-installer-{{ harbor_version }}.tgz"
+    dest: "/tmp/harbor-installer.tgz"
+    mode: '0644'
+  when: not harbor_installer.stat.exists
+
+- name: Extract Harbor installer
+  ansible.builtin.unarchive:
+    src: "/tmp/harbor-installer.tgz"
+    dest: "{{ harbor_install_dir }}"
+    remote_src: true
+  when: not harbor_installer.stat.exists
+
+- name: Template Harbor configuration (harbor.yml)
+  ansible.builtin.template:
+    src: harbor.yml.j2
+    dest: "{{ harbor_install_dir }}/harbor/harbor.yml"
+    mode: '0644'
+
+- name: Run Harbor installation script
+  ansible.builtin.command:
+    cmd: "./install.sh --with-trivy"
+    chdir: "{{ harbor_install_dir }}/harbor"
+  register: harbor_install_result
+  changed_when: "'Harbor has been installed and started successfully' in harbor_install_result.stdout"

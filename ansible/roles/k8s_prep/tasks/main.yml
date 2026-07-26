@@ -51,7 +51,25 @@
 - name: Create containerd config
   ansible.builtin.shell: |
     mkdir -p /etc/containerd
-    containerd config default | sed 's/disabled_plugins = \["cri"\]/disabled_plugins = []/' | sed 's/SystemdCgroup = false/SystemdCgroup = true/' > /etc/containerd/config.toml
+    containerd config default | sed 's/disabled_plugins = \["cri"\]/disabled_plugins = []/' | sed 's/SystemdCgroup = false/SystemdCgroup = true/' | sed 's|config_path = ""|config_path = "/etc/containerd/certs.d"|' > /etc/containerd/config.toml
+  notify: Restart containerd
+
+- name: Create Harbor registry directory for containerd
+  ansible.builtin.file:
+    path: /etc/containerd/certs.d/192.168.50.10:8080
+    state: directory
+    mode: '0755'
+
+- name: Configure insecure registry for Harbor via hosts.toml
+  ansible.builtin.copy:
+    dest: /etc/containerd/certs.d/192.168.50.10:8080/hosts.toml
+    content: |
+      server = "http://192.168.50.10:8080"
+
+      [host."http://192.168.50.10:8080"]
+        capabilities = ["pull", "resolve", "push"]
+        skip_verify = true
+    mode: '0644'
   notify: Restart containerd
 
 - name: Ensure containerd is running
